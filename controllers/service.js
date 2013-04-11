@@ -5,7 +5,8 @@ Services.setModel = function setModel(model) {
 }
 
 Services.getList = function getList(req, res, next) {
-  Services.model.findAll().success(function(services){res.send(services);});
+  Services.model.findAll({ where: { user_id: req.userid }})
+    .success(function(services){res.send(services);});
 }
 
 Services.getOne = function getOne(req, res, next) {
@@ -18,7 +19,7 @@ Services.create = function create(req, res, next) {
       'name':    req.body.name,
       'alias':   req.body.alias,
       'rate':    req.body.rate,
-      'user_id': userid
+      'user_id': req.userid
     })
     .save()
     .success(function(newService) {res.send(newService);})
@@ -28,7 +29,8 @@ Services.create = function create(req, res, next) {
 }
 
 Services.update = function update(req, res, next) {
-  Services.model.find(req.params.id).success(function(service){
+  Services.model.find({ where: { user_id: req.userid, id: req.params.id }})
+    .success(function(service) {
     if ("undefined" != typeof(req.body.name)) {
       service.name  = req.body.name;
     }
@@ -49,7 +51,8 @@ Services.update = function update(req, res, next) {
 }
 
 Services.del = function del(req, res, next) {
-  Services.model.find(req.params.id).success(function(service){
+  Services.model.find({ where: { user_id: req.userid, id: req.params.id }})
+    .success(function(service) {
     service.destroy().success(function() {res.send('');})
   });
 }

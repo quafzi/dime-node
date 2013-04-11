@@ -7,20 +7,22 @@ var restify   = require('restify');
 var jade      = require('jade');
 var mysql     = require('mysql');
 var sys       = require('sys');
-var Sequelize = require("sequelize");
+var Sequelize = require('sequelize');
 
-// @TODO
-var userid = 1;
+//var hasher    = require(__dirname + '/helpers/hasher');
+var authenticate = require(__dirname + '/helpers/authentication');
 
 /* database connection */
 var sequelize = new Sequelize('dime', 'root', '');
 
 /* models */
+var User    = sequelize.import(__dirname + '/models/user');
 var Service = sequelize.import(__dirname + '/models/service');
+Service.hasOne(User);
 
-/* controllers */
-var services = require(__dirname + '/controllers/service');
-services.setModel(Service);
+/* set some authentication params */
+authenticate.User  = User;
+authenticate.Error = restify.NotAuthorizedError;
 
 /* init server */
 var server = restify.createServer({
@@ -28,8 +30,14 @@ var server = restify.createServer({
   version: '0.1.0'
 });
 server.use(restify.acceptParser(server.acceptable));
-    server.use(restify.queryParser());
-    server.use(restify.bodyParser());
+server.use(restify.queryParser());
+server.use(restify.bodyParser());
+server.use(restify.authorizationParser());
+server.use(authenticate);
+
+/* controllers */
+var services = require(__dirname + '/controllers/service');
+services.setModel(Service);
 
 /* routes */
 server.get ('/services',     services.getList);
