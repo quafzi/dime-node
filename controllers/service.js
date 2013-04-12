@@ -4,15 +4,18 @@ Services.setModel = function setModel(model) {
   Services.model = model;
 }
 
+/* GET services */
 Services.getList = function getList(req, res, next) {
   Services.model.findAll({ where: { user_id: req.userid }})
     .success(function(services){res.send(services);});
 }
 
+/* GET services/:id */
 Services.getOne = function getOne(req, res, next) {
   Services.model.find(req.params.id).success(function(service){res.send(service);});
 }
 
+/* POST services */
 Services.create = function create(req, res, next) {
   Services.model
     .build({
@@ -28,6 +31,7 @@ Services.create = function create(req, res, next) {
     });
 }
 
+/* PUT services/:id */
 Services.update = function update(req, res, next) {
   Services.model.find({ where: { user_id: req.userid, id: req.params.id }})
     .success(function(service) {
@@ -50,6 +54,7 @@ Services.update = function update(req, res, next) {
   });
 }
 
+/* DELETE services/:id */
 Services.del = function del(req, res, next) {
   Services.model.find({ where: { user_id: req.userid, id: req.params.id }})
     .success(function(service) {
