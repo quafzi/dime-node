@@ -45,7 +45,7 @@ Services.update = function update(req, res, next) {
       .save()
       .success(function(updatedService) {res.send(updatedService);})
       .error(function(error) {
-        console.log('could not create service: ' + error);
+        console.log('could not update service: ' + error);
       });
   });
 }
