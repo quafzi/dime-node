@@ -12,7 +12,8 @@ Services.getList = function getList(req, res, next) {
 
 /* GET services/:id */
 Services.getOne = function getOne(req, res, next) {
-  Services.model.find(req.params.id).success(function(service){res.send(service);});
+  Services.model.find({ where: { user_id: req.userid, id: req.params.id }})
+    .success(function(service){res.send(service);});
 }
 
 /* POST services */
