@@ -13,11 +13,20 @@ var Sequelize = require('sequelize');
 var sequelize = new Sequelize('dime', 'root', '');
 
 /* models */
-var User     = sequelize.import(__dirname + '/models/user');
-var Service  = sequelize.import(__dirname + '/models/service');
-var Customer = sequelize.import(__dirname + '/models/customer');
-Service.hasOne(User);
-Customer.hasOne(User);
+var User      = sequelize.import(__dirname + '/models/user');
+var Service   = sequelize.import(__dirname + '/models/service');
+var Customer  = sequelize.import(__dirname + '/models/customer');
+var Activity  = sequelize.import(__dirname + '/models/activity');
+var Timeslice = sequelize.import(__dirname + '/models/timeslice');
+var Project   = sequelize.import(__dirname + '/models/project');
+var Tag       = sequelize.import(__dirname + '/models/tag');
+
+/* relations */
+Service.hasOne(User).hasMany(Tag);
+Project.hasOne(User).hasMany(Tag);
+Customer.hasOne(User).hasMany(Project).hasMany(Tag);
+Activity.hasOne(User).hasOne(Project).hasOne(Service).hasOne(Customer).hasMany(Tag);
+Timeslice.hasOne(Activity).hasMany(Tag);
 
 /* set some authentication params */
 var authenticate = require(__dirname + '/helpers/authentication');
