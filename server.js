@@ -9,9 +9,6 @@ var mysql     = require('mysql');
 var sys       = require('sys');
 var Sequelize = require('sequelize');
 
-//var hasher    = require(__dirname + '/helpers/hasher');
-var authenticate = require(__dirname + '/helpers/authentication');
-
 /* database connection */
 var sequelize = new Sequelize('dime', 'root', '');
 
@@ -23,6 +20,7 @@ Service.hasOne(User);
 Customer.hasOne(User);
 
 /* set some authentication params */
+var authenticate = require(__dirname + '/helpers/authentication');
 authenticate.User  = User;
 authenticate.Error = restify.NotAuthorizedError;
 
