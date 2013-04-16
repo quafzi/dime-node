@@ -1,0 +1,70 @@
+var Controller = function Controller() {};
+
+Controller.filter = function filter(req) {
+  return { where: { user_id: req.userid, id: req.params.id }};
+}
+
+Controller.mapData = function mapData(req, force) {
+  data = {};
+  if (force || "undefined" != typeof(req.body.name)) {
+    data.name  = req.body.name;
+  }
+  if (force || "undefined" != typeof(req.body.alias)) {
+    data.alias  = req.body.alias;
+  }
+  if (force || "undefined" != typeof(req.body.rate)) {
+    data.rate  = req.body.rate;
+  }
+  if (force) {
+    data.user_id  = req.userid;
+  }
+  return data;
+}
+
+/* GET <type> */
+Controller.getList = function getList(req, res, next) {
+  Controller.model.findAll({ where: { user_id: req.userid }})
+    .success(function(collection){res.send(collection);});
+}
+
+/* GET <type>/id */
+Controller.getOne = function getOne(req, res, next) {
+  Controller.model.find(Controller.filter(req))
+    .success(function(item){res.send(item);});
+}
+
+/* POST <type> */
+Controller.create = function create(req, res, next) {
+  Controller.model
+    .build(Controller.mapData(req, true))
+    .save()
+    .success(function(newItem) {res.send(newItem);})
+    .error(function(error) {
+      console.log('could not create item: ' + error);
+    });
+}
+
+/* PUT <type>/:id */
+Controller.update = function update(req, res, next) {
+  Controller.model
+    .find(Controller.filter)
+    .success(function(item) {
+      Controller
+        .mapData(req, false)
+        .save()
+        .success(function(updatedItem) {res.send(updatedItem);})
+        .error(function(error) {
+          console.log('could not update item: ' + error);
+        });
+    });
+}
+
+/* DELETE <type>/:id */
+Controller.del = function del(req, res, next) {
+  Controller.model.find(Controller.filter(req))
+    .success(function(item) {
+    service.destroy().success(function() {res.send('');})
+  });
+}
+
+module.exports = Controller;
