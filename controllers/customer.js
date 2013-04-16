@@ -1,9 +1,5 @@
 var Customers = function Customers() {};
 
-Customers.setModel = function setModel(model) {
-  Customers.model = model;
-}
-
 /* GET customers */
 Customers.getList = function getList(req, res, next) {
   Customers.model.findAll({ where: { user_id: req.userid }})

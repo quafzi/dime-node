@@ -46,9 +46,9 @@ server.use(authenticate);
 
 /* controllers */
 var services = require(__dirname + '/controllers/service');
-services.setModel(Service);
+services.model = Service;
 var customers = require(__dirname + '/controllers/customer');
-customers.setModel(Customer);
+customers.model = Customer;
 
 /* routes */
 server.get ('/services',     services.getList);

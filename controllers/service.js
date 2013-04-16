@@ -1,9 +1,5 @@
 var Services = function Services() {};
 
-Services.setModel = function setModel(model) {
-  Services.model = model;
-}
-
 /* GET services */
 Services.getList = function getList(req, res, next) {
   Services.model.findAll({ where: { user_id: req.userid }})
