@@ -1,8 +1,38 @@
-var Controller = function Controller() {};
+var Sequelize = require('sequelize');
+
+/* database connection */
+var sequelize = new Sequelize('dime', 'root', '');
+
+/* models */
+var User      = sequelize.import(__dirname + '/../models/user');
+var Service   = sequelize.import(__dirname + '/../models/service');
+var Customer  = sequelize.import(__dirname + '/../models/customer');
+var Activity  = sequelize.import(__dirname + '/../models/activity');
+var Timeslice = sequelize.import(__dirname + '/../models/timeslice');
+var Project   = sequelize.import(__dirname + '/../models/project');
+var Tag       = sequelize.import(__dirname + '/../models/tag');
+
+/* relations */
+Service.hasOne(User).hasMany(Tag);
+Project.hasOne(User).hasMany(Tag);
+Customer.hasOne(User).hasMany(Project).hasMany(Tag);
+Activity.hasOne(User).hasOne(Project).hasOne(Service).hasOne(Customer).hasMany(Tag);
+Timeslice.hasOne(Activity).hasMany(Tag);
+
+var Controller = function Controller() { };
 
 Controller.filter = function filter(req) {
   return { where: { user_id: req.userid, id: req.params.id }};
 }
+
+Controller.setModel = function setModel(model) {
+  Controller.model = model;
+};
+
+Controller.models = {
+  Service: Service,
+  Customer: Customer
+};
 
 Controller.mapData = function mapData(req, force) {
   data = {};
@@ -21,9 +51,13 @@ Controller.mapData = function mapData(req, force) {
   return data;
 }
 
+Controller.getModel = function getModel() {
+  console.log('no model given?!');
+}
+
 /* GET <type> */
 Controller.getList = function getList(req, res, next) {
-  Controller.model.findAll({ where: { user_id: req.userid }})
+  Controller.getModel().findAll({ where: { user_id: req.userid }})
     .success(function(collection){res.send(collection);});
 }
 
