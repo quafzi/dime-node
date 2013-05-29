@@ -49,6 +49,8 @@ var services = require(__dirname + '/controllers/service');
 services.setModel(Service);
 var customers = require(__dirname + '/controllers/customer');
 customers.setModel(Customer);
+var timeslices = require(__dirname + '/controllers/timeslice');
+timeslices.setModel(Timeslice);
 
 /* routes */
 server.get ('/services',     services.getList);
@@ -62,6 +64,12 @@ server.get ('/customers/:id', customers.getOne);
 server.post('/customers',     customers.create);
 server.put ('/customers/:id', customers.update);
 server.del ('/customers/:id', customers.del);
+
+server.get ('/timeslices',     timeslices.getList);
+server.get ('/timeslices/:id', timeslices.getOne);
+server.post('/timeslices',     timeslices.create);
+server.put ('/timeslices/:id', timeslices.update);
+server.del ('/timeslices/:id', timeslices.del);
 
 /* start server */
 server.listen(SERVER_PORT, function() {
