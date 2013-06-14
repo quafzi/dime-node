@@ -61,6 +61,14 @@ var Timeslice = sequelize.define("Timeslice", {
   underscored: true,
   tableName: 'timeslices'
 })
+var Setting = sequelize.define("Setting", {
+  name:      Sequelize.STRING,
+  namespace: Sequelize.STRING,
+  value:     Sequelize.STRING,
+}, {
+  underscored: true,
+  tableName: 'settings'
+})
 var User = sequelize.define("User", {
   username:  Sequelize.STRING,
   email:     Sequelize.STRING,
@@ -97,16 +105,19 @@ Activity
   .hasOne(Service)
   .hasOne(Customer)
   .hasMany(Tag);
+Setting
+  .hasOne(User)
 Timeslice
   .hasOne(Activity)
   .hasMany(Tag);
 
 module.exports = {
   Activity:  Activity,
-  Service:   Service,
-  Project:   Project,
   Customer:  Customer,
-  Timeslice: Timeslice,
+  Project:   Project,
+  Service:   Service,
+  Setting:   Setting,
   Tag:       Tag,
+  Timeslice: Timeslice,
   User:      User
 }
