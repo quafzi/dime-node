@@ -9,7 +9,7 @@
   },
   "main": "server.js",
   "scripts": {
-    "test": "mocha tests.js"
+    "test": "make test"
   },
   "dependencies": {
     "restify": "*",
