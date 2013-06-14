@@ -1,38 +1,10 @@
-var Sequelize = require('sequelize');
-
-/* database connection */
-var sequelize = new Sequelize('dime', 'root', '');
-
-/* models */
-var User      = sequelize.import(__dirname + '/../models/user');
-var Service   = sequelize.import(__dirname + '/../models/service');
-var Customer  = sequelize.import(__dirname + '/../models/customer');
-var Activity  = sequelize.import(__dirname + '/../models/activity');
-var Timeslice = sequelize.import(__dirname + '/../models/timeslice');
-var Project   = sequelize.import(__dirname + '/../models/project');
-var Tag       = sequelize.import(__dirname + '/../models/tag');
-
-/* relations */
-Service.hasOne(User).hasMany(Tag);
-Project.hasOne(User).hasMany(Tag);
-Customer.hasOne(User).hasMany(Project).hasMany(Tag);
-Activity.hasOne(User).hasOne(Project).hasOne(Service).hasOne(Customer).hasMany(Tag);
-Timeslice.hasOne(Activity).hasMany(Tag);
+var models    = require('./models');
 
 var Controller = function Controller() { };
 
 Controller.filter = function filter(req) {
   return { where: { user_id: req.userid, id: req.params.id }};
 }
-
-Controller.setModel = function setModel(model) {
-  Controller.model = model;
-};
-
-Controller.models = {
-  Service: Service,
-  Customer: Customer
-};
 
 Controller.mapData = function mapData(req, force) {
   data = {};
@@ -51,25 +23,37 @@ Controller.mapData = function mapData(req, force) {
   return data;
 }
 
-Controller.getModel = function getModel() {
+Controller.getModel = function getModel(alias) {
+  console.log(alias)
+  switch(alias) {
+    case 'activities':
+      return models.Activity;
+    case 'customers':
+      return models.Customer;
+    case 'services':
+      return models.Service;
+  }
   console.log('no model given?!');
 }
 
 /* GET <type> */
 Controller.getList = function getList(req, res, next) {
-  Controller.getModel().findAll({ where: { user_id: req.userid }})
+  console.log('getList');
+  Controller.getModel(req.params.model)
+    .findAll({ where: { user_id: req.userid }})
     .success(function(collection){res.send(collection);});
 }
 
 /* GET <type>/id */
 Controller.getOne = function getOne(req, res, next) {
-  Controller.model.find(Controller.filter(req))
+  Controller.getModel(req.params.model)
+    .find(Controller.filter(req))
     .success(function(item){res.send(item);});
 }
 
 /* POST <type> */
 Controller.create = function create(req, res, next) {
-  Controller.model
+  Controller.getModel(req.params.model)
     .build(Controller.mapData(req, true))
     .save()
     .success(function(newItem) {res.send(newItem);})
@@ -80,7 +64,7 @@ Controller.create = function create(req, res, next) {
 
 /* PUT <type>/:id */
 Controller.update = function update(req, res, next) {
-  Controller.model
+  Controller.getModel(req.params.model)
     .find(Controller.filter)
     .success(function(item) {
       Controller
@@ -95,10 +79,11 @@ Controller.update = function update(req, res, next) {
 
 /* DELETE <type>/:id */
 Controller.del = function del(req, res, next) {
-  Controller.model.find(Controller.filter(req))
+  Controller.getModel(req.params.model)
+    .find(Controller.filter(req))
     .success(function(item) {
-    service.destroy().success(function() {res.send('');})
-  });
+      service.destroy().success(function() {res.send('');})
+    });
 }
 
 module.exports = Controller;
