@@ -30,8 +30,16 @@ Controller.getModel = function getModel(alias) {
       return models.Activity;
     case 'customers':
       return models.Customer;
+    case 'projects':
+      return models.Project;
     case 'services':
       return models.Service;
+    case 'tags':
+      return models.Tag;
+    case 'timeslices':
+      return models.Timeslice;
+    case 'users':
+      return models.User;
   }
   console.log('no model given?!');
 }
