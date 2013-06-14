@@ -24,7 +24,6 @@ Controller.mapData = function mapData(req, force) {
 }
 
 Controller.getModel = function getModel(alias) {
-  console.log(alias)
   switch(alias) {
     case 'activities':
       return models.Activity;
@@ -41,12 +40,11 @@ Controller.getModel = function getModel(alias) {
     case 'users':
       return models.User;
   }
-  console.log('no model given?!');
+  throw Error('no model given?!');
 }
 
 /* GET <type> */
 Controller.getList = function getList(req, res, next) {
-  console.log('getList');
   Controller.getModel(req.params.model)
     .findAll({ where: { user_id: req.userid }})
     .success(function(collection){res.send(collection);});
