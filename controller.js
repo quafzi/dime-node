@@ -43,10 +43,26 @@ Controller.getModel = function getModel(alias) {
   throw Error('no model given?!');
 }
 
+Controller.getIncludes = function(alias) {
+  switch(alias) {
+    case 'activities':
+      return [ models.Timeslice, models.Customer, models.Project, models.Service ];
+    case 'customers':
+      return [ models.Activity, models.Project ];
+    case 'projects':
+      return [ models.Activity, models.Customer ];
+//    case 'services':
+//      return [ models.Tag ];
+    case 'timeslices':
+      return [ models.Activity, models.User ];
+  }
+  return [];
+}
+
 /* GET <type> */
 Controller.getList = function getList(req, res, next) {
   Controller.getModel(req.params.model)
-    .findAll({ where: { user_id: req.userid }})
+    .findAll({ where: { user_id: req.userid }, include: Controller.getIncludes(req.params.model) })
     .success(function(collection){res.send(collection);});
 }
 

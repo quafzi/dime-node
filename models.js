@@ -16,7 +16,8 @@ var Activity = sequelize.define("Activity", {
 }, {
   underscored: true,
   tableName: 'activities'
-})
+});
+
 var Customer = sequelize.define("Customer", {
   name:    Sequelize.STRING,
   alias:   Sequelize.STRING,
@@ -25,7 +26,8 @@ var Customer = sequelize.define("Customer", {
 }, {
   underscored: true,
   tableName: 'customers'
-})
+});
+
 var Project = sequelize.define("Project", {
   name:        Sequelize.STRING,
   alias:       Sequelize.STRING,
@@ -35,7 +37,8 @@ var Project = sequelize.define("Project", {
 }, {
   underscored: true,
   tableName: 'projects'
-})
+});
+
 var Service = sequelize.define("Service", {
   name:    Sequelize.STRING,
   alias:   Sequelize.STRING,
@@ -60,7 +63,8 @@ var Timeslice = sequelize.define("Timeslice", {
 }, {
   underscored: true,
   tableName: 'timeslices'
-})
+});
+
 var Setting = sequelize.define("Setting", {
   name:      Sequelize.STRING,
   namespace: Sequelize.STRING,
@@ -68,7 +72,8 @@ var Setting = sequelize.define("Setting", {
 }, {
   underscored: true,
   tableName: 'settings'
-})
+});
+
 var User = sequelize.define("User", {
   username:  Sequelize.STRING,
   email:     Sequelize.STRING,
@@ -89,27 +94,48 @@ var User = sequelize.define("User", {
   }
 })
 
-Service
-  .hasOne(User)
-  .hasMany(Tag);
-Project
-  .hasOne(User)
-  .hasMany(Tag);
-Customer
-  .hasOne(User)
-  .hasMany(Project)
-  .hasMany(Tag);
 Activity
-  .hasOne(User)
-  .hasOne(Project)
-  .hasOne(Service)
-  .hasOne(Customer)
-  .hasMany(Tag);
+  .belongsTo(Customer)
+  .belongsTo(Project)
+  .belongsTo(Service)
+  //.hasMany(Tag, {joinTableName: "activity_tags"})
+  .hasMany(Timeslice)
+  .belongsTo(User);
+Customer
+  .hasMany(Activity)
+  .hasMany(Project)
+  //.hasMany(Tag, {joinTableName: "customer_tags"})
+  .belongsTo(User);
+Service
+  //.hasMany(Tag, {joinTableName: "service_tags"})
+  .belongsTo(User);
 Setting
-  .hasOne(User)
+  .belongsTo(User);
+Project
+  .hasMany(Activity)
+  .belongsTo(Customer)
+  //.hasMany(Tag, {joinTableName: "project_tags"})
+  .belongsTo(User);
+  /*
+Tag
+  .hasMany(Activity,  {joinTableName: "activity_tags"})
+  .hasMany(Customer,  {joinTableName: "customer_tags"})
+  .hasMany(Project,   {joinTableName: "project_tags"})
+  .hasMany(Service,   {joinTableName: "service_tags"})
+  .hasMany(Timeslice, {joinTableName: "timeslice_tags"})
+  .belongsTo(User);
+  */
 Timeslice
-  .hasOne(Activity)
-  .hasMany(Tag);
+  .belongsTo(Activity)
+  //.hasMany(Tag, {joinTableName: "timeslice_tags"})
+  .belongsTo(User);
+User
+  .hasMany(Activity)
+  .hasMany(Customer)
+  .hasMany(Service)
+  .hasMany(Setting)
+  .hasMany(Project)
+  .hasMany(Timeslice);
 
 module.exports = {
   Activity:  Activity,
