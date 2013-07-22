@@ -6,8 +6,7 @@ var Sequelize = require('sequelize');
 var sequelize = new Sequelize('dime', 'root', '');
 
 var Activity = sequelize.define("Activity", {
-  name:        Sequelize.STRING,
-  alias:       Sequelize.STRING,
+  description: Sequelize.STRING,
   rate:        Sequelize.DECIMAL(10, 2),
   user_id:     Sequelize.INTEGER,
   customer_id: Sequelize.INTEGER,
@@ -21,7 +20,6 @@ var Activity = sequelize.define("Activity", {
 var Customer = sequelize.define("Customer", {
   name:    Sequelize.STRING,
   alias:   Sequelize.STRING,
-  rate:    Sequelize.DECIMAL(10, 2),
   user_id: Sequelize.INTEGER
 }, {
   underscored: true,
@@ -47,15 +45,16 @@ var Service = sequelize.define("Service", {
 }, {
   underscored: true,
   tableName: 'services'
-})
+});
+
 var Tag = sequelize.define("Tag", {
   name:    Sequelize.STRING
 }, {
   underscored: true,
   tableName: 'tags'
-})
+});
+
 var Timeslice = sequelize.define("Timeslice", {
-  name:        Sequelize.STRING,
   activity_id: Sequelize.INTEGER,
   started_at:  Sequelize.DATE,
   stopped_at:  Sequelize.DATE,
