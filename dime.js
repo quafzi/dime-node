@@ -26,6 +26,11 @@ Server.use(restify.queryParser());
 Server.use(restify.bodyParser());
 Server.use(restify.authorizationParser());
 Server.use(authenticate);
+Server.use(function enableCors(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 
 /* controllers */
 var Controller = require('./controller');
