@@ -1,4 +1,5 @@
-var models    = require('./models');
+var models = require('./models');
+var _      = require('lodash')
 
 var Controller = function Controller() { };
 
@@ -6,20 +7,9 @@ Controller.filter = function filter(req) {
   return { where: { user_id: req.userid, id: req.params.id }};
 }
 
-Controller.mapData = function mapData(req, force) {
-  data = {};
-  if (force || "undefined" != typeof(req.body.name)) {
-    data.name  = req.body.name;
-  }
-  if (force || "undefined" != typeof(req.body.alias)) {
-    data.alias  = req.body.alias;
-  }
-  if (force || "undefined" != typeof(req.body.rate)) {
-    data.rate  = req.body.rate;
-  }
-  if (force) {
-    data.user_id  = req.userid;
-  }
+Controller.mapData = function mapData(req) {
+  data = JSON.parse(req.body);
+  data.user_id  = req.userid;
   return data;
 }
 
