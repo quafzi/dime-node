@@ -1,5 +1,7 @@
 'use strict';
 
+require('./dev');
+
 var SERVER_PORT = 8001;
 
 var restify   = require('restify');
