@@ -8,8 +8,8 @@ Controller.filter = function filter(req) {
 }
 
 Controller.mapData = function mapData(req) {
-  data = JSON.parse(req.body);
-  data.user_id  = req.userid;
+  data = req.body;
+  data.user_id = req.userid;
   return data;
 }
 
@@ -67,7 +67,10 @@ Controller.getOne = function getOne(req, res, next) {
 Controller.create = function create(req, res, next) {
   Controller.getModel(req.params.model)
     .create(Controller.mapData(req))
-    .success(function(newItem) {res.send(newItem);})
+    .success(function(newItem) {
+      console.log(newItem);
+      res.send(newItem);
+    })
     .error(function(error) {
       console.log('could not create item: ' + error);
       res.send(500, error)
@@ -77,15 +80,19 @@ Controller.create = function create(req, res, next) {
 /* PUT <type>/:id */
 Controller.update = function update(req, res, next) {
   Controller.getModel(req.params.model)
-    .find(Controller.filter)
+    .find(Controller.filter(req))
     .success(function(item) {
-      Controller
-        .mapData(req, false)
-        .save()
-        .success(function(updatedItem) {res.send(updatedItem);})
+      item.updateAttributes(Controller.mapData(req))
+        .success(function(updatedItem) {
+          res.send(updatedItem);
+        })
         .error(function(error) {
-          console.log('could not update item: ' + error);
+          console.error('could not update item ' + error);
+          res.send(503, 'Update failed.');
         });
+    }).error(function(err) {
+      console.error(err);
+      res.send(500, 'Error saving object');
     });
 }
 
