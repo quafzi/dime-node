@@ -66,11 +66,11 @@ Controller.getOne = function getOne(req, res, next) {
 /* POST <type> */
 Controller.create = function create(req, res, next) {
   Controller.getModel(req.params.model)
-    .build(Controller.mapData(req, true))
-    .save()
+    .create(Controller.mapData(req))
     .success(function(newItem) {res.send(newItem);})
     .error(function(error) {
       console.log('could not create item: ' + error);
+      res.send(500, error)
     });
 }
 
