@@ -58,11 +58,11 @@ var Timeslice = sequelize.define("Timeslice", {
   activity_id: Sequelize.INTEGER,
   started_at:  Sequelize.DATE,
   stopped_at:  Sequelize.DATE,
-    duration:    {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      defaultValue: 0
-    }
+  duration:    {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  }
 }, {
   underscored: true,
   tableName: 'timeslices'
