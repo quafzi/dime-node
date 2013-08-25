@@ -8,6 +8,9 @@ Controller.filter = function filter(req) {
 }
 
 Controller.mapData = function mapData(req) {
+  if (false === _.isObject(req.body)) {
+    req.body = JSON.parse(req.body);
+  }
   data = req.body;
   data.user_id = req.userid;
   return data;
@@ -82,6 +85,8 @@ Controller.update = function update(req, res, next) {
   Controller.getModel(req.params.model)
     .find(Controller.filter(req))
     .success(function(item) {
+      delete req.body.id;
+      req.body.user_id = req.userid;
       item.updateAttributes(Controller.mapData(req))
         .success(function(updatedItem) {
           res.send(updatedItem);
